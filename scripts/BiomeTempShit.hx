@@ -6,27 +6,35 @@ import haxe.Json;
 import sys.FileSystem;
 
 class BiomeTempShit {
-	static var path = 'D:/minecraft/source/minecraft-26.2.0/data/minecraft/worldgen/biome';
+	static var input = 'D:/minecraft/source/minecraft-26.2.0/data/minecraft/worldgen/biome';
+	static var output = 'C:/Users/porti/MCreatorWorkspaces/seecret_updates/src/main/resources/data/seecret_updates/tags/worldgen/biome';
 
 	static function main() {
 		var warm:Array<String> = [];
 		var cold:Array<String> = [];
 		var hot:Array<String> = [];
 
-		for (file in FileSystem.readDirectory(path).filter(f -> return StringTools.endsWith(f, 'json'))) {
-			var parsed = Json.parse(File.getContent(path + '/' + file));
+		for (file in FileSystem.readDirectory(input).filter(f -> return StringTools.endsWith(f, 'json'))) {
+			var parsed = Json.parse(File.getContent(input + '/' + file));
 			var id = new Path(file).file;
 
-			if (parsed.temperature < 0.6) cold.push(id);
-			else if (parsed.temperature > 0.6) hot.push(id);
-            else warm.push(id);
+			if (parsed.temperature < 0.6)
+				cold.push(id);
+			else if (parsed.temperature > 0.6)
+				hot.push(id);
+			else
+				warm.push(id);
 		}
 
-        FileSystem.createDirectory('data/biomes');
-
-        File.saveContent('data/biomes/warm.txt', warm.join('\n'));
-        File.saveContent('data/biomes/hot.txt', hot.join('\n'));
-        File.saveContent('data/biomes/cold.txt', cold.join('\n'));
+		File.saveContent('${output}/warm.json', Json.stringify({
+			values: warm
+		}, '\t'));
+		File.saveContent('${output}/cold.json', Json.stringify({
+			values: cold
+		}, '\t'));
+		File.saveContent('${output}/hot.json', Json.stringify({
+			values: hot
+		}, '\t'));
 	}
 
 	/**
